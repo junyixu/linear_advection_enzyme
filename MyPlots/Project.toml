@@ -1,0 +1,8 @@
+name = "MyPlots"
+uuid = "c0a43dd0-ee02-40ba-996a-817cdb80ccd1"
+authors = ["Junyi Xu <junyixu0@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
