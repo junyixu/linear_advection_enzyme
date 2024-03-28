@@ -2,7 +2,7 @@ module MyPlots
 using PyCall
 using LaTeXStrings
 
-export matplotlib, plt, plot
+export matplotlib, plt, plot, scatter
 
 # @pyimport matplotlib.pyplot as plt
 # plt=pyimport("matplotlib.pyplot")
@@ -23,16 +23,16 @@ end
 """
 function plot end
 
-function plot(x, args...; kwargs...)
-    plt.plot(x, args...;  kwargs...)
-end
+for plot_func in [:plot, :scatter]
+    @eval begin
+        function $plot_func(args...; kwargs...)
+            plt.$plot_func(args...;  kwargs...)
+        end
 
-function plot(x, y, args...; kwargs...)
-    plt.plot(x, y, args...;  kwargs...)
-end
-
-function plot(f::Function, x, args...; kwargs...)
-    plt.plot(x, f.(x), args...;  kwargs...)
+        function $plot_func(f::Function, x, args...; kwargs...)
+            plt.$plot_func(x, f.(x), args...;  kwargs...)
+        end
+    end
 end
 
 function plot(f::Function, t::Tuple, args...; kwargs...)
