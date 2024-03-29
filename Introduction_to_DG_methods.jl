@@ -35,12 +35,14 @@ end
 u0 = initial_condition_sine_wave.(x)
 using Plots
 plot(vec(x), vec(u0), label="initial condition", legend=:topleft)
+
 using LinearAlgebra
 M = diagm(weights)
 B = diagm([-1; zeros(polydeg - 1); 1])
 D = basis.derivative_matrix
 surface_flux = flux_lax_friedrichs
 
+# %%
 function rhs!(du, u, x, t)
     # Reset du and flux matrix
     du .= zero(eltype(du))
@@ -82,11 +84,26 @@ function rhs!(du, u, x, t)
     return nothing
 end
 
-using OrdinaryDiffEq
-tspan = (0.0, 2.0)
-ode = ODEProblem(rhs!, u0, tspan, x)
+# %%
 
-sol = solve(ode, RDPK3SpFSAL49(); abstol=1.0e-6, reltol=1.0e-6, ode_default_options()...)
+using Test
+using Enzyme
+using ForwardDiff
 
-plot(vec(x), vec(sol.u[end]), label="solution at t=$(tspan[2])", legend=:topleft, lw=3)
+du = similar(u0)
+rhs!(du, u0, x, 0.0)
 
+function foo(u0)
+    du = similar(u0)
+    rhs!(du, u0, x, 0.0)
+    du
+end
+
+J1 = ForwardDiff.jacobian(du, u0) do du_ode, u_ode
+    rhs!(du_ode, u_ode, x, 0.0)
+end
+J2 = ForwardDiff.jacobian(foo, u0)
+
+@test J1 == J2 # Test Passed
+
+J = Enzyme.jacobian(Forward, foo, u0) # fail
