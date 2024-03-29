@@ -45,5 +45,7 @@ J1 = ForwardDiff.jacobian(upwind_non_circular, u)
 
 J2 = Enzyme.jacobian(Forward, upwind_non_circular, u)
 # J2 = Enzyme.jacobian(Forward, upwind_circular, c_u) # fail
+J4 = Enzyme.jacobian(Reverse, upwind_non_circular, u, Val(301))
 
 @test J1 == J2 # Test Passed
+@test J2 == J4 # Test Passed
