@@ -20,6 +20,8 @@ dx = [0.0, 0.0]
 y = [0.0]
 dy = [1.0]
 autodiff(Reverse, g!, Const, Duplicated(y, dy), Duplicated(x, dx))
+# or
+# autodiff(Reverse, g!, Const, DuplicatedNoNeed(y, dy), Duplicated(x, dx))
 
 # julia> dx
 # 2-element Vector{Float64}:
